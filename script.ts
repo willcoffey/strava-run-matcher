@@ -14,12 +14,12 @@ async function main() {
   makeOutputFolders();
 
   // Once run initially, can be commented out to use saved data and avoid API reqs
-  // await savePotentialRunClubRuns();
+  await savePotentialRunClubRuns();
 
   const activities: Activity[] = loadFile("./data/possible_run_club_runs.json") as Activity[];
 
   // Once run initially, can be commented out to use saved data and avoid API reqs
-  // await saveRunStreamData(activities);
+  await saveRunStreamData(activities);
 
   const activityStreams = await loadActivityStreams();
 
