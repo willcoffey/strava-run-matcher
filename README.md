@@ -24,6 +24,7 @@ For settings I input
 
 In addition, you need to upload an icon for the app. I used a generic SVG from 
 SVGRepo and converted it to JPG using ImageMagick. 
+
 [1]: https://www.strava.com/settings/api
 
 ## Getting an Access Token
