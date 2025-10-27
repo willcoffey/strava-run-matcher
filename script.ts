@@ -12,7 +12,6 @@ interface MatchedActivityDetail {
 }
 async function main() {
   makeOutputFolders();
-  return;
   // Once run initially, can be commented out to use saved data and avoid API reqs
   await savePotentialRunClubRuns();
 
