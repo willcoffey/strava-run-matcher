@@ -5,7 +5,7 @@ haven't been in the habit of signing in, but recorded all my runs on Strava.
 Pulling and analyzing the data from Strava is a simple well defined task to get
 familiar with their API.
 
-Potential match summary data is saved to `data/possible_run_club_runs.tsv`
+Potential match summary data is saved to `data/possible_run_club_runs.json`
 
 Activity streams are saved to `data/activities/{activity_id}.json`
 
