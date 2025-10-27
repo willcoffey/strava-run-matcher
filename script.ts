@@ -12,12 +12,12 @@ interface MatchedActivityDetail {
 }
 async function main() {
   // Once run initially, can be commented out to use saved data and avoid API reqs
-  //await savePotentialRunClubRuns();
+  await savePotentialRunClubRuns();
 
   const activities: Activity[] = loadFile("./data/possible_run_club_runs.json") as Activity[];
 
   // Once run initially, can be commented out to use saved data and avoid API reqs
-  //await saveRunStreamData(filteredActivities);
+  await saveRunStreamData(filteredActivities);
 
   const activityStreams = await loadActivityStreams();
 
