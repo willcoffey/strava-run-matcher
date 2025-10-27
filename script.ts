@@ -12,6 +12,7 @@ interface MatchedActivityDetail {
 }
 async function main() {
   makeOutputFolders();
+
   // Once run initially, can be commented out to use saved data and avoid API reqs
   await savePotentialRunClubRuns();
 
@@ -224,7 +225,7 @@ async function loadActivityStreams(): Promise<Record<string, ActivityStream[] | 
     const [name, id] = file.name.match(/(^\d+).json/) || [];
     if (!id) continue;
     const content = Deno.readTextFileSync(`./data/activities/${file.name}`);
-    activities[id] = JSON.parse(content) as ActivityStream[] | StravaError; 
+    activities[id] = JSON.parse(content) as ActivityStream[] | StravaError;
   }
   return activities;
 }
@@ -318,11 +319,15 @@ async function* getActivities(page = 1, lastPage = Infinity): AsyncGenerator<Act
       `https://www.strava.com/api/v3/athlete/activities?page=${page}&per_page=${per_page}&after=${after}`,
       { headers: { Authorization: `Bearer ${access_token}` } },
     );
-    const activities: Activity[] = await res.json();
-    console.log(`Loaded page ${page} of activity summaries...`);
-    for (const activity of activities) yield activity;
-    if (activities.length === 0) break;
-    page++;
+    try {
+      const activities: Activity[] = await res.json();
+      console.log(`Loaded page ${page} of activity summaries...`);
+      for (const activity of activities) yield activity;
+      if (activities.length === 0) break;
+      page++;
+    } catch (e) {
+      console.log(`Error loading page ${page}, retrying...`);
+    }
   }
   return;
 }
