@@ -14,12 +14,12 @@ async function main() {
   makeOutputFolders();
 
   // Once run initially, can be commented out to use saved data and avoid API reqs
-  await savePotentialRunClubRuns();
+  // await savePotentialRunClubRuns();
 
   const activities: Activity[] = loadFile("./data/possible_run_club_runs.json") as Activity[];
 
   // Once run initially, can be commented out to use saved data and avoid API reqs
-  await saveRunStreamData(activities);
+  // await saveRunStreamData(activities);
 
   const activityStreams = await loadActivityStreams();
 
@@ -58,7 +58,10 @@ async function main() {
           endIndex: end.index,
           distance: distance.data[end.index] - distance.data[start.index],
         };
-        if (details.distance < 2000) details.flagged = true;
+        if (details.distance < 2000) {
+          details.flagged = true;
+          console.log(details.distance);
+        }
         runClubActivities.push(details);
       }
     } else if (!(streams instanceof Array)) {
@@ -134,7 +137,7 @@ function findEndPoint(
     distFromStore: Infinity,
     timestamp: -1,
   };
-  for (let i = latlng.data.length - 1; i > 0; i--) {
+  for (let i = latlng.data.length - 1; i >= 0; i--) {
     const [lat, lng] = latlng.data[i];
     const timestamp = time.data[i];
     const distFromStore = haversineDistanceKm(STORE, [lat, lng]);
@@ -143,7 +146,7 @@ function findEndPoint(
         end.index = i;
         end.distFromStore = distFromStore;
         end.timestamp = timestamp;
-      } else if (distFromStore < end.distFromStore && timestamp - end.timestamp >= 600) {
+      } else if (distFromStore < end.distFromStore && end.timestamp - timestamp <= 600) {
         end.index = i;
         end.distFromStore = distFromStore;
         end.timestamp = timestamp;
