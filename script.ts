@@ -11,13 +11,15 @@ interface MatchedActivityDetail {
   flagged?: true;
 }
 async function main() {
+  makeOutputFolders();
+  return;
   // Once run initially, can be commented out to use saved data and avoid API reqs
   await savePotentialRunClubRuns();
 
   const activities: Activity[] = loadFile("./data/possible_run_club_runs.json") as Activity[];
 
   // Once run initially, can be commented out to use saved data and avoid API reqs
-  await saveRunStreamData(filteredActivities);
+  await saveRunStreamData(activities);
 
   const activityStreams = await loadActivityStreams();
 
@@ -29,11 +31,16 @@ async function main() {
    */
   const runClubActivities: MatchedActivityDetail[] = [];
   const dates: Record<string, boolean> = {};
-  for (const [id, streams] of Object.entries(activityStreams)) {
-    const activity = getActivityById(Number(id), activities);
+  for (const [id, s] of Object.entries(activityStreams)) {
+    let streams: ActivityStream[] = [];
+    if (isStreamArr(s) === true) {
+      streams = s as ActivityStream[];
+    }
+    const a = getActivityById(Number(id), activities);
     // Find the first latlng stream that occurs within 1K of the store, then
     // choose the closest latln to the store within 10 minutes after that
-    if (activity && streams instanceof Array) {
+    if (a !== null && streams.length) {
+      const activity = a as Activity;
       const start = findStartPoint(streams);
       const end = findEndPoint(streams);
       const simpleDate = new Date(activity.start_date).toLocaleDateString();
@@ -55,7 +62,7 @@ async function main() {
         runClubActivities.push(details);
       }
     } else if (!(streams instanceof Array)) {
-      console.log(`Error with activity ${id}: ${streams.message}`);
+      console.log(`Error with activity ${id}: ${(s as StravaError).message}`);
     } else {
       console.log(`Missing activity details for ${id}`);
     }
@@ -83,6 +90,13 @@ async function main() {
     "./data/run_club_runs.tsv",
     toTsv(runClubActivities, activities),
   );
+}
+function makeOutputFolders() {
+  try {
+    Deno.mkdirSync("./data/activities", { recursive: true });
+  } catch (e) {
+    console.log(e);
+  }
 }
 function toTsv(data: MatchedActivityDetail[], activities: Activity[]): string {
   //DateActivity Start TimeActivity End TimeDistanceRun Club Start TimeRun Club DistanceFlagged
@@ -206,12 +220,12 @@ interface StravaError {
 }
 async function loadActivityStreams(): Promise<Record<string, ActivityStream[] | StravaError>> {
   const files = Deno.readDirSync("./data/activities");
-  const activities: Record<string, ActivityStream[]> = {};
+  const activities: Record<string, ActivityStream[] | StravaError> = {};
   for (const file of files) {
     const [name, id] = file.name.match(/(^\d+).json/) || [];
     if (!id) continue;
     const content = Deno.readTextFileSync(`./data/activities/${file.name}`);
-    activities[id] = JSON.parse(content) as ActivityStream[];
+    activities[id] = JSON.parse(content) as ActivityStream[] | StravaError; 
   }
   return activities;
 }
@@ -393,6 +407,10 @@ function haversineDistanceKm(pointA: [number, number], pointB: [number, number])
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isStreamArr(stream: ActivityStream[] | StravaError): stream is ActivityStream[] {
+  return true;
 }
 
 main();
