@@ -5,11 +5,11 @@ haven't been in the habit of signing in, but recorded all my runs on Strava.
 Pulling and analyzing the data from Strava is a simple well defined task to get
 familiar with their API.
 
-Potential match summary data is saved to `data/possible_run_club_runs.tsv`
+Potential match summary data is saved to `data/possible_run_club_runs.json`
 
 Activity streams are saved to `data/activities/{activity_id}.json`
 
-Summarized tsv output is saved to `data/run_club_runs.tsv`
+Summaries of matched runs are saved to `data/run_club_runs.tsv`
 
 # Hello Strava API
 Strava uses OAuth, and there is a bit of setup to do before wrting the script.
@@ -24,6 +24,7 @@ For settings I input
 
 In addition, you need to upload an icon for the app. I used a generic SVG from 
 SVGRepo and converted it to JPG using ImageMagick. 
+
 [1]: https://www.strava.com/settings/api
 
 ## Getting an Access Token
@@ -103,16 +104,15 @@ the store, then find the closest point to the store that occurs within the next
 10 minutes.
 
 ### End Point
-The endpoint is found similarly to the start point, starting from the last point
+The end point is found similarly to the start point, starting from the last point
 int the stream and iterating in the opposite direction.
 
 ### Distance
-The distance stream is used to get the distance between start and endpoint so 
+The distance stream is used to get the distance between start and end point so 
 that only the distance run during run club is counted and not the run to the 
 store or back home. If the distance is less than 2K the activity is flagged, in
 my case these were all runs where I hadn't started the activity until part way
-through the run, and the script calculates the start and endpoint as almost the
-same. These flagged activities can be manually reviewed.
+through the run. These flagged activities can be manually reviewed.
 
 # Outputting
 Once all the activities have been filtered, some basic details get saved to 
