@@ -104,16 +104,15 @@ the store, then find the closest point to the store that occurs within the next
 10 minutes.
 
 ### End Point
-The endpoint is found similarly to the start point, starting from the last point
+The end point is found similarly to the start point, starting from the last point
 int the stream and iterating in the opposite direction.
 
 ### Distance
-The distance stream is used to get the distance between start and endpoint so 
+The distance stream is used to get the distance between start and end point so 
 that only the distance run during run club is counted and not the run to the 
 store or back home. If the distance is less than 2K the activity is flagged, in
 my case these were all runs where I hadn't started the activity until part way
-through the run, and the script calculates the start and endpoint as almost the
-same. These flagged activities can be manually reviewed.
+through the run. These flagged activities can be manually reviewed.
 
 # Outputting
 Once all the activities have been filtered, some basic details get saved to 
