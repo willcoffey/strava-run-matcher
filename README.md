@@ -9,7 +9,7 @@ Potential match summary data is saved to `data/possible_run_club_runs.json`
 
 Activity streams are saved to `data/activities/{activity_id}.json`
 
-Summarized tsv output is saved to `data/run_club_runs.tsv`
+Summaries of matched runs are saved to `data/run_club_runs.tsv`
 
 # Hello Strava API
 Strava uses OAuth, and there is a bit of setup to do before wrting the script.
