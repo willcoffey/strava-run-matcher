@@ -1,0 +1,8 @@
+*.sw?
+token.json
+secrets.json
+activities.json
+data/*.json
+data/*.tsv
+data/activities/*.json
+.DS_Store
